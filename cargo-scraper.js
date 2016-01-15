@@ -1,11 +1,12 @@
 'use strict';
 
-var Yakuza, Gurkha, Q, _, mailsScraper, cargoAgent, mailsJob, getMailsTask, SCHEMAS;
+var Yakuza, Gurkha, Q, _, mailsScraper, cargoAgent, mailsJob, getMailsTask, SCHEMAS, MAX_PAGES;
 Yakuza = require('yakuza');
 _ = require('lodash');
 Gurkha = require('gurkha');
 Q = require('q');
 SCHEMAS = require('./cargo-scraper.schemas');
+MAX_PAGES = 1000000;
 
 function composeUrl (host, path) {
   if (_.contains(path, 'http')) {
@@ -32,15 +33,12 @@ getMailsTask.builder(function (job) {
 });
 
 getMailsTask.main(function (task, http, params) {
-  var optsTemplate, opts, res, visited, collected, count;
+  var optsTemplate, opts, count, gettingPages;
 
-  res = [];
-  visited = {};
-  collected = {};
   count = 0;
+  gettingPages = Q.resolve([]);
 
-  function pageRequest (page) {
-
+  for(var page = 0; page < MAX_PAGES; ++page) {
     function handleResponse (result) {
       var body, linksParser, links, gettingMails;
 
@@ -67,12 +65,6 @@ getMailsTask.main(function (task, http, params) {
 
       _.each(links, function (link) {
         var opts, request;
-
-        if (visited[link]) {
-          return;
-        }
-
-        visited[link] = true;
 
         opts = optsTemplate.build({
           'url': link
@@ -132,35 +124,30 @@ getMailsTask.main(function (task, http, params) {
           var opts, mail;
 
           if (result) {
-            if (collected[result]) {
-            } else {
-              // console.log(result);
-              collected[result] = true;
-              mail = result;
+            mail = result;
 
-              opts = optsTemplate.build({
-                'url': 'http://52.33.130.163//users',
-                'data': {
-                  'user_data': {
-                    'user': {
-                      'email': result,
-                      'name': ''
-                    },
+            opts = optsTemplate.build({
+              'url': 'http://52.33.130.163//users',
+              'data': {
+                'user_data': {
+                  'user': {
+                    'email': result,
+                    'name': ''
                   },
-                  'country_code': 21
-                }
-              });
+                },
+                'country_code': 21
+              }
+            });
 
-              return http.post(opts)
+            return http.post(opts)
 
-              .then(function (result) {
-                console.log('____________');
-                console.log(++count);
-                console.log('mail:' + mail);
-                console.log(result.body);
-                console.log('____________');
-              });
-            }
+            .then(function (result) {
+              console.log('____________');
+              console.log(++count);
+              console.log('mail:' + mail);
+              console.log(result.body);
+              console.log('____________');
+            });
           }
         });
 
@@ -170,11 +157,9 @@ getMailsTask.main(function (task, http, params) {
       Q.all(gettingMails)
 
       .then(function (result) {
-        return pageRequest(page + 1);
       })
 
       .fail(function (reason) {
-        return pageRequest(page + 1);
       }).done();
     }
 
@@ -187,9 +172,11 @@ getMailsTask.main(function (task, http, params) {
         'url': 'http://cargocollective.com/gallery'
       });
 
-      return http.get(opts)
+      gettingPages = gettingPages.then(function (result) {
+        http.get(opts)
 
-      .then(handleResponse);
+        .then(handleResponse);
+      });
     }
 
     opts = optsTemplate.build({
@@ -209,12 +196,16 @@ getMailsTask.main(function (task, http, params) {
       }
     });
 
-    return http.post(opts)
+    gettingPages = gettingPages.then(function (result) {
+      http.post(opts)
 
-    .then(handleResponse);
+      .then(handleResponse);
+    });
   }
 
-  pageRequest(0);
+  gettingPages.then(function (result) {
+    task.success('mails retrieved');
+  });
 });
 
 mailsJob = Yakuza.job('mails', 'cargoMails');
