@@ -15,9 +15,6 @@
   "bugs": {
     "url": "https://github.com/monitz87/dribbl-scraper/issues"
   },
-  "scripts": {
-    "start": "./cargo-scraper.js"
-  },
   "homepage": "https://github.com/monitz87/dribbl-scraper",
   "dependencies": {
     "gurkha": "^2.0.3",
