@@ -1,0 +1,25 @@
+{
+  "name": "cargo-scraper",
+  "version": "1.0.0",
+  "description": "scraper",
+  "main": "cargo-scraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/monitz87/dribbl-scraper.git"
+  },
+  "author": "Jeremías Díaz Cordara <monitz87@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/monitz87/dribbl-scraper/issues"
+  },
+  "homepage": "https://github.com/monitz87/dribbl-scraper",
+  "dependencies": {
+    "gurkha": "^2.0.3",
+    "lodash": "^3.8.0",
+    "q": "^1.2.0",
+    "yakuza": "^1.0.7"
+  }
+}
