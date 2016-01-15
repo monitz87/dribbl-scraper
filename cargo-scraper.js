@@ -6,7 +6,7 @@ _ = require('lodash');
 Gurkha = require('gurkha');
 Q = require('q');
 SCHEMAS = require('./cargo-scraper.schemas');
-MAX_PAGES = 50000;
+MAX_PAGES = 30000;
 
 function composeUrl (host, path) {
   if (_.contains(path, 'http')) {
