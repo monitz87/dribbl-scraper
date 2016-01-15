@@ -1,0 +1,67 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'owner', 'ls', 'cargo-scraper.js' ]
+2 info using npm@2.1.14
+3 info using node@v0.10.34
+4 verbose node symlink /usr/local/bin/node
+5 silly mapToRegistry name cargo-scraper.js
+6 silly mapToRegistry using default registry
+7 silly mapToRegistry registry https://registry.npmjs.org/
+8 silly mapToRegistry uri https://registry.npmjs.org/cargo-scraper.js
+9 verbose request uri https://registry.npmjs.org/cargo-scraper.js
+10 verbose request no auth needed
+11 info attempt registry request try #1 at 16:46:52
+12 verbose request using bearer token for auth
+13 verbose request id e8c482cc950dcc10
+14 http request GET https://registry.npmjs.org/cargo-scraper.js
+15 http 404 https://registry.npmjs.org/cargo-scraper.js
+16 verbose headers { 'content-type': 'application/json',
+16 verbose headers   'cache-control': 'max-age=0',
+16 verbose headers   'content-length': '2',
+16 verbose headers   'accept-ranges': 'bytes',
+16 verbose headers   date: 'Fri, 15 Jan 2016 19:46:52 GMT',
+16 verbose headers   via: '1.1 varnish',
+16 verbose headers   connection: 'keep-alive',
+16 verbose headers   'x-served-by': 'cache-atl6224-ATL',
+16 verbose headers   'x-cache': 'MISS',
+16 verbose headers   'x-cache-hits': '0',
+16 verbose headers   'x-timer': 'S1452887212.632273,VS0,VE27' }
+17 silly get cb [ 404,
+17 silly get   { 'content-type': 'application/json',
+17 silly get     'cache-control': 'max-age=0',
+17 silly get     'content-length': '2',
+17 silly get     'accept-ranges': 'bytes',
+17 silly get     date: 'Fri, 15 Jan 2016 19:46:52 GMT',
+17 silly get     via: '1.1 varnish',
+17 silly get     connection: 'keep-alive',
+17 silly get     'x-served-by': 'cache-atl6224-ATL',
+17 silly get     'x-cache': 'MISS',
+17 silly get     'x-cache-hits': '0',
+17 silly get     'x-timer': 'S1452887212.632273,VS0,VE27' } ]
+18 error owner ls Couldn't get owner data cargo-scraper.js
+19 verbose stack Error: Registry returned 404 for GET on https://registry.npmjs.org/cargo-scraper.js
+19 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:234:14)
+19 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:172:14)
+19 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:373:22)
+19 verbose stack     at Request.emit (events.js:98:17)
+19 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1318:14)
+19 verbose stack     at Request.emit (events.js:117:20)
+19 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1266:12)
+19 verbose stack     at IncomingMessage.emit (events.js:117:20)
+19 verbose stack     at _stream_readable.js:944:16
+19 verbose stack     at process._tickCallback (node.js:442:13)
+20 verbose statusCode 404
+21 verbose pkgid cargo-scraper.js
+22 verbose cwd /Users/jere/Code/dribbl-scraper
+23 error Darwin 14.5.0
+24 error argv "node" "/usr/local/bin/npm" "owner" "ls" "cargo-scraper.js"
+25 error node v0.10.34
+26 error npm  v2.1.14
+27 error code E404
+28 error 404 Registry returned 404 for GET on https://registry.npmjs.org/cargo-scraper.js
+28 error 404
+28 error 404 'cargo-scraper.js' is not in the npm registry.
+28 error 404 You should bug the author to publish it (or use the name yourself!)
+28 error 404
+28 error 404 Note that you can also install from a
+28 error 404 tarball, folder, http url, or git url.
+29 verbose exit [ 1, true ]

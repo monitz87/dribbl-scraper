@@ -16,7 +16,7 @@
     "url": "https://github.com/monitz87/dribbl-scraper/issues"
   },
   "scripts": {
-    "start": "cargo-scraper.js"
+    "start": "./cargo-scraper.js"
   },
   "homepage": "https://github.com/monitz87/dribbl-scraper",
   "dependencies": {
