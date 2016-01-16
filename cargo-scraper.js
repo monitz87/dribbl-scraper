@@ -6,7 +6,7 @@ _ = require('lodash');
 Gurkha = require('gurkha');
 Q = require('q');
 SCHEMAS = require('./cargo-scraper.schemas');
-MAX_PAGES = 1000;
+MAX_PAGES = 100000;
 
 function composeUrl (host, path) {
   if (_.contains(path, 'http')) {
@@ -33,12 +33,12 @@ getMailsTask.builder(function (job) {
 });
 
 getMailsTask.main(function (task, http, params) {
-  var optsTemplate, opts, count, gettingPages, page;
+  var optsTemplate, opts, count, gettingPages, page, currentPage;
 
   function handleResponse (result) {
     var body, linksParser, links, gettingMails;
 
-    if (page === 0) {
+    if (currentPage++ === 0) {
       body = result.body;
     } else {
       body = JSON.parse(result.body).html;
@@ -81,10 +81,13 @@ getMailsTask.main(function (task, http, params) {
         if (mail === null) {
           linkParser = new Gurkha(SCHEMAS.internalLinks);
           links = linkParser.parse(body);
-          // console.log(links);
           about = _.find(links, function (element) {
-            var lc = element.toLowerCase();
-            return _.contains(lc, 'about') || _.contains(lc, 'info') || _.contains(lc, 'contact');
+            if (element) {
+              var lc = element.toLowerCase();
+              return _.contains(lc, 'about') || _.contains(lc, 'info') || _.contains(lc, 'contact');
+            }
+
+            return false;
           });
 
           // console.log(about);
@@ -107,7 +110,11 @@ getMailsTask.main(function (task, http, params) {
                 return;
               }
 
-              return mail[0];
+              if (mail) {
+                return mail[0];
+              }
+
+              return;
             });
           }
         } else {
@@ -155,11 +162,12 @@ getMailsTask.main(function (task, http, params) {
     })
 
     .fail(function (reason) {
+      console.log(reason);
     }).done();
   }
 
   count = 0;
-  page = 0;
+  currentPage = 0;
   gettingPages = Q.resolve([]);
 
   for(page = 0; page < MAX_PAGES; ++page) {
@@ -174,10 +182,10 @@ getMailsTask.main(function (task, http, params) {
       });
 
       gettingPages = gettingPages.then(function (result) {
-        http.get(opts)
+        return http.get(opts);
+      })
 
-        .then(handleResponse);
-      });
+      .then(handleResponse);
     }
 
     opts = optsTemplate.build({
@@ -198,15 +206,19 @@ getMailsTask.main(function (task, http, params) {
     });
 
     gettingPages = gettingPages.then(function (result) {
-      http.post(opts)
+      return http.post(opts);
+    })
 
-      .then(handleResponse);
-    });
+    .then(handleResponse);
   }
 
   gettingPages.then(function (result) {
     task.success('mails retrieved');
-  });
+  })
+
+  .fail(function (reason) {
+    console.log(reason);
+  }).done();
 });
 
 mailsJob = Yakuza.job('mails', 'cargoMails');
