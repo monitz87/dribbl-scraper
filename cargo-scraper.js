@@ -6,7 +6,7 @@ _ = require('lodash');
 Gurkha = require('gurkha');
 Q = require('q');
 SCHEMAS = require('./cargo-scraper.schemas');
-MAX_PAGES = 100000;
+MAX_PAGES = 25000;
 
 function composeUrl (host, path) {
   if (_.contains(path, 'http')) {
@@ -38,10 +38,17 @@ getMailsTask.main(function (task, http, params) {
   function handleResponse (result) {
     var body, linksParser, links, gettingMails;
 
+    console.log('PAGE:' + currentPage);
+
     if (currentPage++ === 0) {
       body = result.body;
     } else {
-      body = JSON.parse(result.body).html;
+      try {
+        body = JSON.parse(result.body).html;
+      } catch (e) {
+        console.log(e);
+        body = result.body;
+      }
     }
     // console.log(body);
 
@@ -50,6 +57,7 @@ getMailsTask.main(function (task, http, params) {
     links = linksParser.parse(body);
 
     if (!links) {
+      console.log('WHAT!?!?!?!');
       task.success('mails retrieved');
       return;
     }
@@ -213,6 +221,7 @@ getMailsTask.main(function (task, http, params) {
   }
 
   gettingPages.then(function (result) {
+    console.log('WHAT');
     task.success('mails retrieved');
   })
 
