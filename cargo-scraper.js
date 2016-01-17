@@ -164,14 +164,15 @@ getMailsTask.main(function (task, http, params) {
       gettingMails.push(request);
     });
 
-    Q.all(gettingMails)
+    return Q.all(gettingMails)
 
     .then(function (result) {
+      console.log('page ready');
     })
 
     .fail(function (reason) {
       console.log(reason);
-    }).done();
+    });
   }
 
   count = 0;
@@ -220,7 +221,7 @@ getMailsTask.main(function (task, http, params) {
     .then(handleResponse);
   }
 
-  gettingPages.then(function (result) {
+  gettingPages = gettingPages.then(function (result) {
     console.log('WHAT');
     task.success('mails retrieved');
   })
@@ -237,8 +238,8 @@ mailsJob.on('task:*:fail', function (response) {
   console.log(response.error.stack);
 });
 
-mailsJob.on('task:sendMails:success', function (response) {
-  console.log(response);
+mailsJob.on('task:getMails:success', function (response) {
+  console.log(response.data);
 });
 
 mailsJob.routine('all');
