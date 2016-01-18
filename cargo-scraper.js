@@ -147,11 +147,13 @@ getMailsTask.main(function (task, http, params) {
                 'user': {
                   'email': result,
                   'name': ''
-                },
+                }
               },
               'country_code': 21
             }
           });
+
+          console.log(result);
 
           return http.post(opts)
 
