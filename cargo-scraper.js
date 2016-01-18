@@ -38,6 +38,10 @@ getMailsTask.main(function (task, http, params) {
   function handleResponse (result) {
     var body, linksParser, links, gettingMails;
 
+    // MEMORY LEAK
+    console.log('LENGTH: ' + http._log.length);
+    http._log = [];
+
     console.log('PAGE:' + currentPage);
 
     if (currentPage++ === 0) {
@@ -195,30 +199,30 @@ getMailsTask.main(function (task, http, params) {
       })
 
       .then(handleResponse);
+    } else {
+      opts = optsTemplate.build({
+        'url': 'http://cargocollective.com/dispatch/tracemark/loadTracemarks',
+        'data': {
+          'should_paginate': 'true',
+          'is_updating': 'true',
+          'within_bounds': 'true',
+          'preload_distance': '1500',
+          'page': page,
+          'more_load_handle': '.gallery #moreload',
+          'ajax_route': 'tracemark/loadTracemarks',
+          'is_ajax': 'true',
+          'height_selector': '#column_2',
+          'limit': '50',
+          'offset': '50'
+        }
+      });
+
+      gettingPages = gettingPages.then(function (result) {
+        return http.post(opts);
+      })
+
+      .then(handleResponse);
     }
-
-    opts = optsTemplate.build({
-      'url': 'http://cargocollective.com/dispatch/tracemark/loadTracemarks',
-      'data': {
-        'should_paginate': 'true',
-        'is_updating': 'true',
-        'within_bounds': 'true',
-        'preload_distance': '1500',
-        'page': page,
-        'more_load_handle': '.gallery #moreload',
-        'ajax_route': 'tracemark/loadTracemarks',
-        'is_ajax': 'true',
-        'height_selector': '#column_2',
-        'limit': '50',
-        'offset': '50'
-      }
-    });
-
-    gettingPages = gettingPages.then(function (result) {
-      return http.post(opts);
-    })
-
-    .then(handleResponse);
   }
 
   gettingPages = gettingPages.then(function (result) {
