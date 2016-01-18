@@ -153,8 +153,6 @@ getMailsTask.main(function (task, http, params) {
             }
           });
 
-          console.log(result);
-
           return http.post(opts)
 
           .then(function (result) {
