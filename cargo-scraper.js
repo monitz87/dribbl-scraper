@@ -161,6 +161,8 @@ getMailsTask.main(function (task, http, params) {
             console.log('mail:' + mail);
             console.log(result.body);
             console.log('____________');
+
+            return Q.resolve([]);
           });
         }
       });
@@ -191,7 +193,7 @@ getMailsTask.main(function (task, http, params) {
 
     if (page === 0) {
       opts = optsTemplate.build({
-        'url': 'http://cargocollective.com/gallery'
+        'url': 'http://cargocollective.com/selections'
       });
 
       gettingPages = gettingPages.then(function (result) {
@@ -201,21 +203,39 @@ getMailsTask.main(function (task, http, params) {
       .then(handleResponse);
     } else {
       opts = optsTemplate.build({
-        'url': 'http://cargocollective.com/dispatch/tracemark/loadTracemarks',
-        'data': {
-          'should_paginate': 'true',
-          'is_updating': 'true',
-          'within_bounds': 'true',
-          'preload_distance': '1500',
-          'page': page,
-          'more_load_handle': '.gallery #moreload',
-          'ajax_route': 'tracemark/loadTracemarks',
-          'is_ajax': 'true',
-          'height_selector': '#column_2',
-          'limit': '50',
-          'offset': '50'
-        }
+        'headers': {
+          'Accept': '*/*',
+          'Accept-Encoding': 'gzip, deflate',
+          'Accept-Language': 'es-ES,es;q=0.8',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Host': 'cargocollective.com',
+          'Origin': 'http://cargocollective.com',
+          'Pragma': 'no-cache',
+          'Referer': 'http://cargocollective.com/selections',
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        'url': 'http://cargocollective.com/dispatch/selections/community',
+        // 'data': {
+        //   'should_paginate': 'true',
+        //   'is_updating': 'true',
+        //   'within_bounds': 'true',
+        //   'preload_distance': '1500',
+        //   'page': page,
+        //   'more_load_handle': '.gallery #moreload',
+        //   'ajax_route': 'selections/community',
+        //   'is_ajax': 'true',
+        //   'height_selector': '#column_1',
+        //   'limit': '50',
+        //   'offset': 50 * page,
+        //   'sort': 'newest'
+        // }
+        'data': 'should_paginate=true&is_updating=true&within_bounds=true&preload_distance=1500&page=' + page + '&more_load_handle=.gallery+%23moreload&ajax_route=selections%2Fcommunity&is_ajax=true&height_selector=%23column_1&limit=50&offset=50&sort=newest'
       });
+
+      console.log(page);
 
       gettingPages = gettingPages.then(function (result) {
         return http.post(opts);
